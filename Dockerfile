@@ -2,14 +2,12 @@
 
 FROM --platform=$BUILDPLATFORM rust:1.64 AS buildbase
 WORKDIR /src
-RUN <<EOT bash
-    set -ex
-    apt-get update
-    apt-get install -y \
-        git \
-        clang
-    rustup target add wasm32-wasi
-EOT
+
+# Removing heredoc to avoid the following error: failed to solve: process "/bin/sh -c <<EOT bash\n    set -ex\r\n
+RUN apt-get update
+RUN apt-get install -y git clang
+RUN rustup target add wasm32-wasi
+
 # This line installs WasmEdge including the AOT compiler
 RUN curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
 
